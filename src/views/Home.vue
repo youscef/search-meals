@@ -8,18 +8,23 @@
 
     <div class="flex gap-2 mt-2 justify-center">
       <RouterLink
-        :to="{ name: 'byLetter', params: { letter } }"
         v-for="letter of letters"
         :key="letter"
+        :to="{ name: 'byLetter', params: { letter } }"
         >{{ letter }}</RouterLink
       >
     </div>
   </div>
 </template>
 <script setup>
-import { computed } from "vue";
+import { computed, onMounted, ref } from "vue";
 import store from "../store";
-
-const meals = computed(() => store.state.meals);
+import axiosClient from "../axiosClient";
+const ingredients = ref([]);
 const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+onMounted(async () => {
+  const response = await axiosClient.get("list.php?i=list");
+  ingredients.value = response.data.meals;
+  console.log(response);
+});
 </script>
